@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Function to find the greatest of three numbers
+findGreatest() {
+    a=$1
+    b=$2
+    c=$3
+
+    if (( a >= b )) && (( a >= c )); then
+        echo "$a is the greatest."
+    elif (( b >= a )) && (( b >= c )); then
+        echo "$b is the greatest."
+    else
+        echo "$c is the greatest."
+    fi
+}
+
+# Prompt the user to enter three numbers
+read -p "Enter the first number: " num1
+read -p "Enter the second number: " num2
+read -p "Enter the third number: " num3
+
+# Call the findGreatest function with the user input
+findGreatest $num1 $num2 $num3
