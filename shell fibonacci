@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Function to generate the Fibonacci series
+fibonacci() {
+    n=$1
+    a=0
+    b=1
+
+    echo "Fibonacci series up to $n terms:"
+
+    # Print the first term
+    echo -n "$a"
+
+    # Print the remaining terms
+    for (( i=1; i<n; i++ )); do
+        echo -n ", $b"
+        next=$((a + b))
+        a=$b
+        b=$next
+    done
+
+    echo "" # Print a new line
+}
+
+# Prompt the user for the number of terms
+read -p "Enter the number of terms: " numTerms
+
+# Call the fibonacci function with the user input
+fibonacci $numTerms
