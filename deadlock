@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define NUM_PROCESSES 3
+#define NUM_RESOURCES 3
+
+void checkDeadlock(int max[][NUM_RESOURCES], int allocation[][NUM_RESOURCES], int available[]) {
+    int need[NUM_PROCESSES][NUM_RESOURCES];
+
+    // Calculate the need matrix
+    for (int i = 0; i < NUM_PROCESSES; i++) {
+        for (int j = 0; j < NUM_RESOURCES; j++) {
+            need[i][j] = max[i][j] - allocation[i][j];
+        }
+    }
+
+    bool finished[NUM_PROCESSES] = {false};
+    bool changed;
+    int work[NUM_RESOURCES];
+    int safeSequence[NUM_PROCESSES];
+    int count = 0;
+
+    // Initialize the work and safe sequence arrays
+    for (int i = 0; i < NUM_RESOURCES; i++) {
+        work[i] = available[i];
+    }
+
+    // Find a safe sequence
+    while (count < NUM_PROCESSES) {
+        changed = false;
+        for (int i = 0; i < NUM_PROCESSES; i++) {
+            if (!finished[i]) {
+                bool canExecute = true;
+                for (int j = 0; j < NUM_RESOURCES; j++) {
+                    if (need[i][j] > work[j]) {
+                        canExecute = false;
+                        break;
+                    }
+                }
+                if (canExecute) {
+                    // Process i can complete its execution
+                    for (int j = 0; j < NUM_RESOURCES; j++) {
+                        work[j] += allocation[i][j];
+                    }
+                    safeSequence[count] = i;
+                    finished[i] = true;
+                    changed = true;
+                    count++;
+                }
+            }
+        }
+        // If no process was changed in this iteration, the system is in a deadlock state
+        if (!changed) {
+            printf("System is in a deadlock state.\n");
+            return;
+        }
+    }
+
+    printf("System is not in a deadlock state.\n");
+    printf("Safe Sequence: ");
+    for (int i = 0; i < NUM_PROCESSES - 1; i++) {
+        printf("P%d -> ", safeSequence[i]);
+    }
+    printf("P%d\n", safeSequence[NUM_PROCESSES - 1]);
+}
+
+int main() {
+    int max[NUM_PROCESSES][NUM_RESOURCES] = {
+        {3, 6, 8},
+        {4, 3, 3},
+        {3, 4, 4}
+    };
+
+    int allocation[NUM_PROCESSES][NUM_RESOURCES] = {
+        {3, 3, 3},
+        {2, 0, 3},
+        {1, 2, 4}
+    };
+
+    int available[NUM_RESOURCES] = {1, 2, 0};
+
+    checkDeadlock(max, allocation, available);
+
+    return 0;
+}
