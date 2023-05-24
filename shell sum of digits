@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Function to calculate the sum of digits in a number
+calculateSumOfDigits() {
+    number=$1
+    sum=0
+
+    # Iterate through each digit of the number
+    while ((number > 0)); do
+        digit=$((number % 10))
+        sum=$((sum + digit))
+        number=$((number / 10))
+    done
+
+    echo "Sum of the digits: $sum"
+}
+
+# Prompt the user to enter a number
+read -p "Enter a number: " inputNumber
+
+# Call the calculateSumOfDigits function with the user input
+calculateSumOfDigits $inputNumber
