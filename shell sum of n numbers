@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Function to calculate the sum of numbers
+calculateSum() {
+    sum=0
+
+    # Loop through the numbers and add them to the sum
+    for number in "$@"; do
+        sum=$((sum + number))
+    done
+
+    echo "Sum of the numbers: $sum"
+}
+
+# Prompt the user to enter the numbers
+read -p "Enter the numbers (space-separated): " numbers
+
+# Split the input into an array of numbers
+IFS=" " read -r -a numberArray <<< "$numbers"
+
+# Call the calculateSum function with the number array
+calculateSum "${numberArray[@]}"
