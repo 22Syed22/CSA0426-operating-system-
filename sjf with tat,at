@@ -1,0 +1,86 @@
+#include <stdio.h>
+
+typedef struct {
+    int processId;
+    int arrivalTime;
+    int burstTime;
+    int waitingTime;
+    int turnaroundTime;
+} Process;
+
+void sjfScheduling(Process processes[], int n) {
+    int currentTime = 0;
+    int totalWaitingTime = 0;
+    int totalTurnaroundTime = 0;
+
+    // Sort the processes based on burst time in ascending order using bubble sort
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (processes[j].burstTime > processes[j + 1].burstTime) {
+                Process temp = processes[j];
+                processes[j] = processes[j + 1];
+                processes[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("Process\tArrival Time\tBurst Time\tWaiting Time\tTurnaround Time\n");
+
+    for (int i = 0; i < n; i++) {
+        Process currentProcess = processes[i];
+        currentProcess.waitingTime = currentTime - currentProcess.arrivalTime;
+        if (currentProcess.waitingTime < 0) {
+            currentTime = currentProcess.arrivalTime;
+            currentProcess.waitingTime = 0;
+        }
+        currentProcess.turnaroundTime = currentProcess.waitingTime + currentProcess.burstTime;
+
+        printf("%d\t%d\t\t%d\t\t%d\t\t%d\n", currentProcess.processId, currentProcess.arrivalTime,
+               currentProcess.burstTime, currentProcess.waitingTime, currentProcess.turnaroundTime);
+
+        totalWaitingTime += currentProcess.waitingTime;
+        totalTurnaroundTime += currentProcess.turnaroundTime;
+        currentTime += currentProcess.burstTime;
+    }
+
+    double avgWaitingTime = (double) totalWaitingTime / n;
+    double avgTurnaroundTime = (double) totalTurnaroundTime / n;
+
+    printf("\nAverage Waiting Time: %.2f\n", avgWaitingTime);
+    printf("Average Turnaround Time: %.2f\n", avgTurnaroundTime);
+}
+
+int main() {
+    Process processes[3];
+    int arrivalTimes[3];
+    int burstTimes[3];
+
+    printf("Enter arrival time for Process 0: ");
+    scanf("%d", &arrivalTimes[0]);
+    printf("Enter burst time for Process 0: ");
+    scanf("%d", &burstTimes[0]);
+
+    printf("Enter arrival time for Process 1: ");
+    scanf("%d", &arrivalTimes[1]);
+    printf("Enter burst time for Process 1: ");
+    scanf("%d", &burstTimes[1]);
+
+    printf("Enter arrival time for Process 2: ");
+    scanf("%d", &arrivalTimes[2]);
+    printf("Enter burst time for Process 2: ");
+    scanf("%d", &burstTimes[2]);
+
+    for (int i = 0; i < 3; i++) {
+        processes[i].processId = i;
+        processes[i].arrivalTime = arrivalTimes[i];
+        processes[i].burstTime = burstTimes[i];
+        processes[i].waitingTime = 0;
+        processes[i].turnaroundTime = 0;
+    }
+
+    int numProcesses = sizeof(processes) / sizeof(processes[0]);
+
+    sjfScheduling(processes, numProcesses);
+
+    return 0;
+}
